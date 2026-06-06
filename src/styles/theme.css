@@ -1,0 +1,90 @@
+/* ══════════════════════════════════════════════════════
+   Angel's Dust — Animation System
+   ui-ux-pro-max: CSS-only, no RAF blocking, reduced-motion safe
+   Duration rules: micro 150-300ms, complex ≤400ms, ken-burns 22s
+   ══════════════════════════════════════════════════════ */
+
+/* ── Hero Ken Burns — POV dolly into patisserie table ── */
+@keyframes ken-burns {
+  0%   { transform: scale(1.10) translateY(0%);  }
+  50%  { transform: scale(1.03) translateY(2.5%); }
+  100% { transform: scale(1.10) translateY(0%);  }
+}
+.hero-ken-burns {
+  animation: ken-burns 22s ease-in-out infinite;
+  will-change: transform;
+  transform-origin: center center;
+}
+
+/* ── Scroll caret pulse ── */
+@keyframes pulse-bar {
+  0%, 100% { transform: scaleY(1);   opacity: 0.35; }
+  50%       { transform: scaleY(0.3); opacity: 0.1;  }
+}
+
+/* ── Rating pulse dot ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* ── Arrow nudge (CTA button) ── */
+@keyframes nudge-x {
+  0%, 100% { transform: translateX(0); }
+  55%       { transform: translateX(5px); }
+}
+.hero-arrow-nudge {
+  display: inline-block;
+  animation: nudge-x 1.8s ease-in-out infinite;
+}
+
+/* ── Gold dust float ── */
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0);    opacity: 0.15; }
+  50%       { transform: translateY(-18px); opacity: 0.4; }
+}
+.hero-float-particle {
+  animation: float-particle 6s ease-in-out infinite;
+}
+
+/* ── Entrance animations ── */
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-rise         { animation: fade-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-rise-delay   { animation: fade-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.animate-fade-rise-delay-2 { animation: fade-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+.animate-fade-rise-delay-3 { animation: fade-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both; }
+
+/* ── Marquee scroll ── */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 32s linear infinite;
+  will-change: transform;
+}
+
+/* ══════════════════════════════════════════════════════
+   REDUCED MOTION — ui-ux-pro-max: parallax-subtle +
+   reduced-motion rule — respect user system preference
+   ══════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .hero-ken-burns,
+  .hero-arrow-nudge,
+  .hero-float-particle,
+  .animate-marquee {
+    animation: none !important;
+  }
+  .animate-fade-rise,
+  .animate-fade-rise-delay,
+  .animate-fade-rise-delay-2,
+  .animate-fade-rise-delay-3 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

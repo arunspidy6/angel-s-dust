@@ -1,0 +1,15 @@
+{
+  "enabledMcpjsonServers": ["firecrawl"],
+  "env": {
+    "FIRECRAWL_API_KEY": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(git *)",
+      "Read",
+      "Edit",
+      "Write"
+    ]
+  }
+}

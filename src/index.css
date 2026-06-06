@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ══════════════════════════════════════════
+   DESIGN TOKENS — Luxury Royal Palette
+   Pink, White, Gold Pastel, Navy Blue
+   ══════════════════════════════════════════ */
+:root {
+  /* Surfaces */
+  --white: #FFFFFF;
+  --ivory: #FAF8F5;
+  --blush: #F5E6E0;
+
+  /* Brand accents */
+  --gold: #D4AF6A;
+  --gold-light: #E8D48B;
+  --gold-pale: #F5EDD8;
+
+  /* Colors */
+  --pink: #E8C8D0;
+  --pink-dark: #D4A8B8;
+  --navy: #1F2E54;
+  --navy-light: #2D3E6E;
+
+  /* Text */
+  --text-dark: #1F2E54;
+  --text-secondary: #5C6B8E;
+  --text-muted: #8B96AE;
+  --text-light: #C7B5AA;
+
+  /* Spacing */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --space-12: 6rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--white);
+    color: var(--text-dark);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--navy);
+  }
+
+  p, a, li {
+    line-height: 1.75;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--ivory);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 3px;
+  }
+}
+
+@layer utilities {
+  /* Gold shimmer */
+  .gold-shimmer {
+    background: linear-gradient(90deg, #9B7B3E 0%, #D4AF6A 50%, #9B7B3E 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+
+  /* Utility classes */
+  .hero-arrow-nudge {
+    display: inline-block;
+    animation: nudge-x 1.8s ease-in-out infinite;
+  }
+
+  .max-w-site {
+    max-width: 88rem;
+  }
+
+  /* Focus states - accessibility */
+  .focus-visible\:outline {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* ═════════════════════════════════════════
+   ANIMATIONS — Smooth, no choppiness
+   ═════════════════════════════════════════ */
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes nudge-x {
+  0%, 100% { transform: translateX(0); }
+  55% { transform: translateX(5px); }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0); opacity: 0.15; }
+  50% { transform: translateY(-18px); opacity: 0.4; }
+}
+
+@keyframes pulse-bar {
+  0%, 100% { transform: scaleY(1); opacity: 0.35; }
+  50% { transform: scaleY(0.3); opacity: 0.1; }
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-rise {
+  animation: fade-rise 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ═════════════════════════════════════════
+   ACCESSIBILITY — Reduced Motion Support
+   ═════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ═════════════════════════════════════════
+   RESPONSIVE — Mobile-first
+   ═════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+}
