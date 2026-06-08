@@ -46,3 +46,28 @@ export const slideRight = (delay = 0) => ({
 
 export const stagger = (i: number, base = 0, step = 0.1) =>
   slideUp(base + i * step)
+
+/* Cinematic image unveil — scale down from 1.18 */
+export const imageReveal = (delay = 0) => ({
+  initial: { opacity: 0, scale: 1.18 },
+  whileInView: { opacity: 1, scale: 1 },
+  viewport: VP,
+  transition: { duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] as const },
+})
+
+/* Container that staggers its motion children */
+export const staggerParent = (step = 0.12, delayChildren = 0.1) => ({
+  initial: 'hidden',
+  whileInView: 'show',
+  viewport: VP,
+  variants: {
+    hidden: {},
+    show: { transition: { staggerChildren: step, delayChildren } },
+  },
+})
+
+/* Child variant for use inside staggerParent */
+export const staggerChild = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
+}
