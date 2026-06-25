@@ -2,16 +2,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "functions": {
-    "api/*.ts": {
-      "runtime": "@vercel/node"
-    }
-  },
   "rewrites": [
     { "source": "/api/products/:id", "destination": "/api/products?id=:id" },
     { "source": "/api/orders/:id",   "destination": "/api/orders?id=:id"   },
     { "source": "/api/messages/:id", "destination": "/api/messages?id=:id" },
     { "source": "/api/reviews/:id",  "destination": "/api/reviews?id=:id"  },
-    { "source": "/(.*)",             "destination": "/index.html"           }
+    { "source": "/((?!api).*)",      "destination": "/index.html"           }
   ]
 }
