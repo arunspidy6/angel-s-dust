@@ -2,10 +2,22 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "angels-dust",
+      "name": "Frontend (Vite)",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 5173
+      "port": 5174
+    },
+    {
+      "name": "Backend (Express API)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "backend"],
+      "port": 3001
+    },
+    {
+      "name": "Both (Frontend + Backend)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:all"],
+      "port": 5174
     }
   ]
 }
