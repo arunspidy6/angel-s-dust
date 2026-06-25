@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
-import ReactEasyCrop from 'react-easy-crop'
-import 'react-easy-crop/lib/styles.css'
+import Cropper from 'react-easy-crop'
 
 interface Product {
   id?: string
@@ -507,8 +506,8 @@ export default function EnhancedProductForm({
               Crop Your Image
             </h3>
 
-            <div style={{ position: 'relative', height: '400px', marginBottom: '1.5rem', background: '#F0F0F0' }}>
-              <ReactEasyCrop
+            <div style={{ position: 'relative', height: '400px', marginBottom: '1.5rem', background: '#F0F0F0', overflow: 'hidden', border: '1px solid #DDD', borderRadius: '6px' }}>
+              <Cropper
                 image={uploadedImage}
                 crop={crop}
                 zoom={zoom}
