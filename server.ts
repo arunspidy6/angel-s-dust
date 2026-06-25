@@ -15,9 +15,13 @@ app.use(bodyParser.json())
 initDatabase()
 
 // Products
-app.get('/api/products', (req, res) => {
-  const products = getProducts()
-  res.json(products)
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await getProducts()
+    res.json(products || [])
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message })
+  }
 })
 
 app.post('/api/products', (req, res) => {
@@ -48,23 +52,27 @@ app.delete('/api/products/:id', (req, res) => {
 })
 
 // Orders
-app.get('/api/orders', (req, res) => {
-  const orders = getOrders()
-  res.json(orders)
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await getOrders()
+    res.json(orders || [])
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message })
+  }
 })
 
-app.post('/api/orders', (req, res) => {
+app.post('/api/orders', async (req, res) => {
   try {
-    const order = addOrder(req.body)
+    const order = await addOrder(req.body)
     res.status(201).json(order)
   } catch (err) {
     res.status(400).json({ error: (err as Error).message })
   }
 })
 
-app.put('/api/orders/:id', (req, res) => {
+app.put('/api/orders/:id', async (req, res) => {
   try {
-    const order = updateOrderStatus(req.params.id, req.body.status)
+    const order = await updateOrderStatus(req.params.id, req.body.status)
     res.json(order)
   } catch (err) {
     res.status(400).json({ error: (err as Error).message })
@@ -81,14 +89,18 @@ app.delete('/api/orders/:id', (req, res) => {
 })
 
 // Messages
-app.get('/api/messages', (req, res) => {
-  const messages = getMessages()
-  res.json(messages)
+app.get('/api/messages', async (req, res) => {
+  try {
+    const messages = await getMessages()
+    res.json(messages || [])
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message })
+  }
 })
 
-app.post('/api/messages', (req, res) => {
+app.post('/api/messages', async (req, res) => {
   try {
-    const message = addMessage(req.body)
+    const message = await addMessage(req.body)
     res.status(201).json(message)
   } catch (err) {
     res.status(400).json({ error: (err as Error).message })
@@ -105,23 +117,27 @@ app.delete('/api/messages/:id', (req, res) => {
 })
 
 // Reviews
-app.get('/api/reviews', (req, res) => {
-  const reviews = getReviews()
-  res.json(reviews)
+app.get('/api/reviews', async (req, res) => {
+  try {
+    const reviews = await getReviews()
+    res.json(reviews || [])
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message })
+  }
 })
 
-app.post('/api/reviews', (req, res) => {
+app.post('/api/reviews', async (req, res) => {
   try {
-    const review = addReview(req.body)
+    const review = await addReview(req.body)
     res.status(201).json(review)
   } catch (err) {
     res.status(400).json({ error: (err as Error).message })
   }
 })
 
-app.put('/api/reviews/:id', (req, res) => {
+app.put('/api/reviews/:id', async (req, res) => {
   try {
-    const review = updateReview(req.params.id, req.body)
+    const review = await updateReview(req.params.id, req.body)
     res.json(review)
   } catch (err) {
     res.status(400).json({ error: (err as Error).message })
