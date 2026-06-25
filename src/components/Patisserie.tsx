@@ -23,11 +23,11 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
         {...imageReveal()}
         className={`col-span-12 md:col-span-7 ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
       >
-        <div style={{ position: 'relative', aspectRatio: '4/5', overflow: 'hidden', background: '#FFF5F3' }}>
+        <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: '#FFF5F3' }}>
           <motion.img
             src={plate.img}
             alt={plate.title}
-            style={{ y: imgY, position: 'absolute', inset: '-10% 0', width: '100%', height: '120%', objectFit: 'cover' }}
+            style={{ y: imgY, position: 'absolute', inset: '-8% 0', width: '100%', height: '116%', objectFit: 'cover' }}
           />
           <div style={{ position: 'absolute', top: '1.25rem', left: '1.25rem', right: '1.25rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.35em', color: 'white', mixBlendMode: 'difference', fontFamily: "'Inter', sans-serif" }}>
             <span>N°{plate.number}</span><span>Pâtisserie</span>
@@ -87,7 +87,7 @@ export default function Patisserie() {
               <span style={{ height: '1px', width: '3rem', background: '#D4AF37', display: 'block' }} />
             </div>
             <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(2.75rem, 6vw, 6rem)', lineHeight: 0.95, letterSpacing: '-1.8px', color: '#2D2422', fontWeight: 400 }}>
-              Each piece, <em style={{ fontStyle: 'italic', color: '#D4AF37' }}>a small work of art.</em>
+              Today's menu, <em style={{ fontStyle: 'italic', color: '#D4AF37' }}>a small work of art.</em>
             </h2>
           </motion.div>
           <motion.div {...slideUp(0.15)} className="col-span-12 md:col-span-4 md:pb-3">

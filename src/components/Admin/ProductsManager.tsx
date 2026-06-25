@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import EnhancedProductForm from './EnhancedProductForm'
 
 interface Product {
   id: string
@@ -181,7 +182,7 @@ export default function ProductsManager() {
 
       {/* Form or List */}
       {editingId || isAdding ? (
-        <ProductForm
+        <EnhancedProductForm
           product={formData}
           onChange={setFormData}
           onSave={handleSave}

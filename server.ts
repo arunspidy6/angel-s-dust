@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import { initDatabase, getProducts, addProduct, updateProduct, deleteProduct } from './db'
+import { initDatabase, initContentTable, getProducts, addProduct, updateProduct, deleteProduct, getContent, saveContent } from './db'
 import { getOrders, addOrder, updateOrderStatus, deleteOrder } from './api/orders'
 import { getMessages, addMessage, deleteMessage } from './api/messages'
 import { getReviews, addReview, updateReview, deleteReview } from './api/reviews'
@@ -13,6 +13,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 initDatabase()
+initContentTable()
 
 // Products
 app.get('/api/products', async (req, res) => {
@@ -148,6 +149,25 @@ app.delete('/api/reviews/:id', (req, res) => {
   try {
     deleteReview(req.params.id)
     res.json({ success: true })
+  } catch (err) {
+    res.status(400).json({ error: (err as Error).message })
+  }
+})
+
+// Content Management
+app.get('/api/content', async (req, res) => {
+  try {
+    const content = await getContent()
+    res.json(content || {})
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message })
+  }
+})
+
+app.post('/api/content', async (req, res) => {
+  try {
+    const result = await saveContent(req.body)
+    res.json(result)
   } catch (err) {
     res.status(400).json({ error: (err as Error).message })
   }

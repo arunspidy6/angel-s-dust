@@ -119,3 +119,48 @@ export function updateProduct(id: string, updates: Partial<Product>): Product {
 export function deleteProduct(id: string): void {
   db.run('DELETE FROM products WHERE id = ?', [id])
 }
+
+// Content Management
+export function initContentTable(): void {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS content (
+      key TEXT PRIMARY KEY,
+      value TEXT,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+}
+
+export function getContent(): any {
+  return new Promise((resolve, reject) => {
+    db.all('SELECT key, value FROM content', (err, rows) => {
+      if (err) reject(err)
+      else {
+        const content: any = {}
+        rows?.forEach((row: any) => {
+          content[row.key] = row.value
+        })
+        resolve(content)
+      }
+    })
+  })
+}
+
+export function saveContent(contentData: Record<string, string>): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const insertStmt = db.prepare(`
+      INSERT OR REPLACE INTO content (key, value, updated_at)
+      VALUES (?, ?, CURRENT_TIMESTAMP)
+    `)
+
+    db.serialize(() => {
+      Object.entries(contentData).forEach(([key, value]) => {
+        insertStmt.run([key, value])
+      })
+      insertStmt.finalize((err) => {
+        if (err) reject(err)
+        else resolve({ success: true })
+      })
+    })
+  })
+}

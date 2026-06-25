@@ -3,13 +3,15 @@ import ProductsManager from './ProductsManager'
 import OrdersManager from './OrdersManager'
 import MessagesManager from './MessagesManager'
 import ReviewsManager from './ReviewsManager'
+import ContentManager from './ContentManager'
 
-type Tab = 'products' | 'orders' | 'messages' | 'reviews'
+type Tab = 'content' | 'products' | 'orders' | 'messages' | 'reviews'
 
 export default function AdminLayout() {
-  const [activeTab, setActiveTab] = useState<Tab>('products')
+  const [activeTab, setActiveTab] = useState<Tab>('content')
 
   const tabs = [
+    { id: 'content', label: 'Content', icon: '📝', count: null },
     { id: 'products', label: 'Products', icon: '📦', count: null },
     { id: 'orders', label: 'Orders', icon: '🛍️', count: null },
     { id: 'messages', label: 'Messages', icon: '💬', count: null },
@@ -87,6 +89,7 @@ export default function AdminLayout() {
 
       {/* Content */}
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+        {activeTab === 'content' && <ContentManager />}
         {activeTab === 'products' && <ProductsManager />}
         {activeTab === 'orders' && <OrdersManager />}
         {activeTab === 'messages' && <MessagesManager />}
