@@ -31,7 +31,7 @@ export default function EnhancedProductForm({
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ x: number; y: number; width: number; height: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -517,7 +517,7 @@ export default function EnhancedProductForm({
                 onCropChange={setCrop}
                 onCropComplete={handleCropComplete}
                 onZoomChange={setZoom}
-                restricted={false}
+                restrictPosition={false}
               />
             </div>
 

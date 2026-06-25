@@ -1,3 +1,4 @@
+import { API_BASE } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 
 interface PageContent {
@@ -104,7 +105,7 @@ export default function ContentManager() {
 
   const saveContent = async () => {
     try {
-      await fetch('http://localhost:3001/api/content', {
+      await fetch(API_BASE + '/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content),

@@ -1,3 +1,4 @@
+import { API_BASE } from '../lib/apiUrl'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { slideLeft, staggerParent, staggerChild, VP } from '../lib/motion'
@@ -27,7 +28,7 @@ export default function Reviews() {
   const [reviews, setReviews] = useState(DEFAULT_reviews)
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/reviews')
+    fetch(API_BASE + '/api/reviews')
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

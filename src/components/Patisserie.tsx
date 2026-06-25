@@ -1,3 +1,4 @@
+import { API_BASE } from '../lib/apiUrl'
 import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { slideUp, slideLeft, slideRight, imageReveal, VP } from '../lib/motion'
@@ -63,7 +64,7 @@ export default function Patisserie() {
   const [plates, setPlates] = useState(DEFAULT_PLATES)
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/products')
+    fetch(API_BASE + '/api/products')
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

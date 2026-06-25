@@ -1,48 +1,42 @@
-import sqlite3 from 'sqlite3'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { sql } from '@vercel/postgres'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const dbPath = path.join(__dirname, '..', 'cms.db')
-const db = new sqlite3.Database(dbPath)
-
-export interface Message {
-  id: string
-  name: string
-  email: string
-  message: string
-  read: boolean
-  createdAt: string
+async function ensureTable() {
+  await sql`CREATE TABLE IF NOT EXISTS messages (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    email TEXT,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+  )`
 }
 
-export function getMessages(): Message[] {
-  return new Promise((resolve, reject) => {
-    db.all('SELECT * FROM messages ORDER BY createdAt DESC', (err, rows) => {
-      if (err) reject(err)
-      else resolve((rows || []).map(r => ({ ...r, read: Boolean(r.read) })))
-    })
-  }) as any
-}
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  if (req.method === 'OPTIONS') return res.status(200).end()
 
-export function addMessage(message: Omit<Message, 'id' | 'createdAt' | 'read'>): Message {
-  const id = `msg_${Date.now()}`
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT INTO messages (id, name, email, message) VALUES (?, ?, ?, ?)`,
-      [id, message.name, message.email, message.message],
-      function (err) {
-        if (err) reject(err)
-        else resolve({
-          id,
-          ...message,
-          read: false,
-          createdAt: new Date().toISOString()
-        })
-      }
-    )
-  }) as any
-}
+  await ensureTable()
 
-export function deleteMessage(id: string): void {
-  db.run('DELETE FROM messages WHERE id = ?', [id])
+  const id = req.query.id as string | undefined
+
+  if (req.method === 'GET') {
+    const { rows } = await sql`SELECT * FROM messages ORDER BY created_at DESC`
+    return res.json(rows)
+  }
+
+  if (req.method === 'POST') {
+    const { name, email, message } = req.body
+    const newId = crypto.randomUUID()
+    await sql`INSERT INTO messages (id, name, email, message) VALUES (${newId}, ${name}, ${email}, ${message})`
+    return res.status(201).json({ id: newId, name, email, message })
+  }
+
+  if (req.method === 'DELETE' && id) {
+    await sql`DELETE FROM messages WHERE id=${id}`
+    return res.json({ success: true })
+  }
+
+  return res.status(405).json({ error: 'Method not allowed' })
 }

@@ -1,3 +1,4 @@
+import { API_BASE } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 import EnhancedProductForm from './EnhancedProductForm'
 
@@ -27,7 +28,7 @@ export default function ProductsManager() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/products')
+      const res = await fetch(API_BASE + '/api/products')
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       const data = await res.json()
       setProducts(Array.isArray(data) ? data : [])
@@ -70,7 +71,7 @@ export default function ProductsManager() {
     }
 
     try {
-      const url = isAdding ? 'http://localhost:3001/api/products' : `http://localhost:3001/api/products/${editingId}`
+      const url = isAdding ? API_BASE + '/api/products' : API_BASE + `/api/products/${editingId}`
       const method = isAdding ? 'POST' : 'PUT'
 
       const res = await fetch(url, {
@@ -96,7 +97,7 @@ export default function ProductsManager() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product? This cannot be undone.')) return
     try {
-      await fetch(`http://localhost:3001/api/products/${id}`, { method: 'DELETE' })
+      await fetch(API_BASE + `/api/products/${id}`, { method: 'DELETE' })
       fetchProducts()
     } catch (err) {
       setError('Failed to delete product')

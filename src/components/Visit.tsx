@@ -1,3 +1,4 @@
+import { API_BASE } from '../lib/apiUrl'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { slideUp, staggerParent, staggerChild } from '../lib/motion'
@@ -9,7 +10,7 @@ export default function Visit() {
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch('http://localhost:3001/api/messages', {
+      const res = await fetch(API_BASE + '/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contactForm),

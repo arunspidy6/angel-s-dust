@@ -1,3 +1,4 @@
+import { API_BASE } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 
 interface Order {
@@ -26,7 +27,7 @@ export default function OrdersManager() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/orders')
+      const res = await fetch(API_BASE + '/api/orders')
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       const data = await res.json()
       setOrders(Array.isArray(data) ? data : [])
@@ -42,7 +43,7 @@ export default function OrdersManager() {
 
   const updateStatus = async (id: string, status: string) => {
     try {
-      await fetch(`http://localhost:3001/api/orders/${id}`, {
+      await fetch(API_BASE + `/api/orders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -56,7 +57,7 @@ export default function OrdersManager() {
   const deleteOrder = async (id: string) => {
     if (!confirm('Delete this order? This cannot be undone.')) return
     try {
-      await fetch(`http://localhost:3001/api/orders/${id}`, { method: 'DELETE' })
+      await fetch(API_BASE + `/api/orders/${id}`, { method: 'DELETE' })
       fetchOrders()
     } catch (err) {
       setError('Failed to delete order')

@@ -1,65 +1,54 @@
-import sqlite3 from 'sqlite3'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { sql } from '@vercel/postgres'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const dbPath = path.join(__dirname, '..', 'cms.db')
-const db = new sqlite3.Database(dbPath)
-
-export interface Order {
-  id: string
-  name: string
-  email: string
-  phone: string
-  items: string
-  totalPrice: number
-  status: 'pending' | 'confirmed' | 'shipped' | 'completed' | 'cancelled'
-  notes: string
-  createdAt: string
-  updatedAt: string
+async function ensureTable() {
+  await sql`CREATE TABLE IF NOT EXISTS orders (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    items TEXT,
+    total_price NUMERIC DEFAULT 0,
+    status TEXT DEFAULT 'pending',
+    notes TEXT,
+    pickup_date TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+  )`
 }
 
-export function getOrders(): Order[] {
-  return new Promise((resolve, reject) => {
-    db.all('SELECT * FROM orders ORDER BY createdAt DESC', (err, rows) => {
-      if (err) reject(err)
-      else resolve(rows || [])
-    })
-  }) as any
-}
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  if (req.method === 'OPTIONS') return res.status(200).end()
 
-export function addOrder(order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>): Order {
-  const id = `ord_${Date.now()}`
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT INTO orders (id, name, email, phone, items, totalPrice, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, order.name, order.email, order.phone, order.items, order.totalPrice, order.status || 'pending', order.notes || ''],
-      function (err) {
-        if (err) reject(err)
-        else resolve({
-          id,
-          ...order,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        })
-      }
-    )
-  }) as any
-}
+  await ensureTable()
 
-export function updateOrderStatus(id: string, status: string): Order {
-  return new Promise((resolve, reject) => {
-    db.run(
-      `UPDATE orders SET status = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-      [status, id],
-      function (err) {
-        if (err) reject(err)
-        else resolve({ id, status } as any)
-      }
-    )
-  }) as any
-}
+  const id = req.query.id as string | undefined
 
-export function deleteOrder(id: string): void {
-  db.run('DELETE FROM orders WHERE id = ?', [id])
+  if (req.method === 'GET') {
+    const { rows } = await sql`SELECT * FROM orders ORDER BY created_at DESC`
+    return res.json(rows)
+  }
+
+  if (req.method === 'POST') {
+    const { name, email, phone, items, totalPrice, status, notes, pickupDate } = req.body
+    const newId = crypto.randomUUID()
+    await sql`INSERT INTO orders (id, name, email, phone, items, total_price, status, notes, pickup_date)
+      VALUES (${newId}, ${name}, ${email}, ${phone}, ${items}, ${totalPrice ?? 0}, ${status ?? 'pending'}, ${notes}, ${pickupDate})`
+    return res.status(201).json({ id: newId, ...req.body })
+  }
+
+  if (req.method === 'PUT' && id) {
+    const { status } = req.body
+    await sql`UPDATE orders SET status=${status} WHERE id=${id}`
+    return res.json({ id, status })
+  }
+
+  if (req.method === 'DELETE' && id) {
+    await sql`DELETE FROM orders WHERE id=${id}`
+    return res.json({ success: true })
+  }
+
+  return res.status(405).json({ error: 'Method not allowed' })
 }

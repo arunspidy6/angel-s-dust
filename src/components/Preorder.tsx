@@ -1,3 +1,4 @@
+import { API_BASE } from '../lib/apiUrl'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { slideLeft, slideRight } from '../lib/motion'
@@ -39,7 +40,7 @@ export default function Preorder() {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/orders', {
+      const res = await fetch(API_BASE + '/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,70 +1,49 @@
-import sqlite3 from 'sqlite3'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { sql } from '@vercel/postgres'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const dbPath = path.join(__dirname, '..', 'cms.db')
-const db = new sqlite3.Database(dbPath)
-
-export interface Review {
-  id: string
-  author: string
-  time: string
-  stars: number
-  text: string
-  approved: boolean
-  createdAt: string
+async function ensureTable() {
+  await sql`CREATE TABLE IF NOT EXISTS reviews (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    rating INTEGER,
+    comment TEXT,
+    approved BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW()
+  )`
 }
 
-export function getReviews(): Review[] {
-  return new Promise((resolve, reject) => {
-    db.all('SELECT * FROM reviews WHERE approved = 1 ORDER BY createdAt DESC', (err, rows) => {
-      if (err) reject(err)
-      else resolve((rows || []).map(r => ({ ...r, approved: Boolean(r.approved) })))
-    })
-  }) as any
-}
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  if (req.method === 'OPTIONS') return res.status(200).end()
 
-export function addReview(review: Omit<Review, 'id' | 'createdAt' | 'approved'>): Review {
-  const id = `rev_${Date.now()}`
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT INTO reviews (id, author, time, stars, text, approved) VALUES (?, ?, ?, ?, ?, 0)`,
-      [id, review.author, review.time, review.stars, review.text],
-      function (err) {
-        if (err) reject(err)
-        else resolve({
-          id,
-          ...review,
-          approved: false,
-          createdAt: new Date().toISOString()
-        })
-      }
-    )
-  }) as any
-}
+  await ensureTable()
 
-export function updateReview(id: string, updates: Partial<Review>): Review {
-  return new Promise((resolve, reject) => {
-    const fields = Object.keys(updates)
-      .filter(k => !['id', 'createdAt'].includes(k))
-      .map(k => `${k} = ?`)
-      .join(', ')
-    const values = Object.keys(updates)
-      .filter(k => !['id', 'createdAt'].includes(k))
-      .map(k => updates[k as keyof Review])
+  const id = req.query.id as string | undefined
 
-    db.run(
-      `UPDATE reviews SET ${fields} WHERE id = ?`,
-      [...values, id],
-      function (err) {
-        if (err) reject(err)
-        else resolve({ id, ...updates } as any)
-      }
-    )
-  }) as any
-}
+  if (req.method === 'GET') {
+    const { rows } = await sql`SELECT * FROM reviews ORDER BY created_at DESC`
+    return res.json(rows)
+  }
 
-export function deleteReview(id: string): void {
-  db.run('DELETE FROM reviews WHERE id = ?', [id])
+  if (req.method === 'POST') {
+    const { name, rating, comment } = req.body
+    const newId = crypto.randomUUID()
+    await sql`INSERT INTO reviews (id, name, rating, comment) VALUES (${newId}, ${name}, ${rating}, ${comment})`
+    return res.status(201).json({ id: newId, name, rating, comment, approved: false })
+  }
+
+  if (req.method === 'PUT' && id) {
+    const { approved } = req.body
+    await sql`UPDATE reviews SET approved=${approved} WHERE id=${id}`
+    return res.json({ id, approved })
+  }
+
+  if (req.method === 'DELETE' && id) {
+    await sql`DELETE FROM reviews WHERE id=${id}`
+    return res.json({ success: true })
+  }
+
+  return res.status(405).json({ error: 'Method not allowed' })
 }
