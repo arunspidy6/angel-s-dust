@@ -1,7 +1,29 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { slideUp, staggerParent, staggerChild } from '../lib/motion'
 
 export default function Visit() {
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' })
+  const [contactSent, setContactSent] = useState(false)
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const res = await fetch('http://localhost:3001/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactForm),
+      })
+
+      if (res.ok) {
+        setContactSent(true)
+        setContactForm({ name: '', email: '', message: '' })
+        setTimeout(() => setContactSent(false), 3000)
+      }
+    } catch (err) {
+      console.error('Failed to send message:', err)
+    }
+  }
   const label: React.CSSProperties = {
     fontSize: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.3em',
     color: '#6F6F6F', fontFamily: "'Inter', sans-serif", marginBottom: '1rem', display: 'block',
@@ -87,6 +109,94 @@ export default function Visit() {
               />
             </div>
           </motion.div>
+        </motion.div>
+
+        {/* Contact Form */}
+        <motion.div {...slideUp(0.2)} style={{ marginTop: '6rem', maxWidth: '600px', margin: '6rem auto 0' }}>
+          <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: '2rem', color: '#2D2422', marginBottom: '2rem', textAlign: 'center' }}>
+            Get In Touch
+          </h3>
+          {contactSent ? (
+            <div style={{ padding: '2rem', textAlign: 'center', background: '#e8f5e9', border: '1px solid #4CAF50', borderRadius: '4px' }}>
+              <p style={{ color: '#2e7d32', fontSize: '1rem', margin: 0 }}>✓ Message sent! We'll get back to you soon.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleContactSubmit} style={{ display: 'grid', gap: '1.5rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem', color: '#2D2422' }}>Name</label>
+                <input
+                  type="text"
+                  required
+                  value={contactForm.name}
+                  onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '1rem',
+                  }}
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem', color: '#2D2422' }}>Email</label>
+                <input
+                  type="email"
+                  required
+                  value={contactForm.email}
+                  onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '1rem',
+                  }}
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem', color: '#2D2422' }}>Message</label>
+                <textarea
+                  required
+                  rows={5}
+                  value={contactForm.message}
+                  onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                  }}
+                  placeholder="Your message..."
+                />
+              </div>
+              <button
+                type="submit"
+                style={{
+                  padding: '1rem',
+                  background: '#D4AF37',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s ease',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+                onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+              >
+                Send Message
+              </button>
+            </form>
+          )}
         </motion.div>
       </div>
     </section>

@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { slideLeft, staggerParent, staggerChild, VP } from '../lib/motion'
 
-const REVIEWS = [
-  { author: 'Kym Tucker', time: '2 months ago', stars: 5, text: "It's like a taste of Paris right here in Limerick. The patisseries are amazingly delicious and absolute works of art. Fantastic value for money." },
-  { author: 'May', time: 'Local Guide · 248 reviews', stars: 5, text: "The cakes are unreal. No wonder they sell out so fast. Arrive as soon as they open!" },
-  { author: 'S.S.', time: 'Local Guide · 59 reviews', stars: 5, text: "Beautiful pastries. Each piece is a work of art. Great value starting from €5." },
-  { author: "Claire O'Brien", time: '1 month ago', stars: 5, text: "Absolutely incredible. The croissants are the best I've had outside of France. Worth every penny." },
-  { author: 'Dermot F.', time: '3 months ago', stars: 5, text: "A gem in Limerick. The pistachio choux is extraordinary. We drove an hour just to get here." },
+const DEFAULT_reviews = [
+  { id: '1', author: 'Kym Tucker', time: '2 months ago', stars: 5, text: "It's like a taste of Paris right here in Limerick. The patisseries are amazingly delicious and absolute works of art. Fantastic value for money." },
+  { id: '2', author: 'May', time: 'Local Guide · 248 reviews', stars: 5, text: "The cakes are unreal. No wonder they sell out so fast. Arrive as soon as they open!" },
+  { id: '3', author: 'S.S.', time: 'Local Guide · 59 reviews', stars: 5, text: "Beautiful pastries. Each piece is a work of art. Great value starting from €5." },
+  { id: '4', author: "Claire O'Brien", time: '1 month ago', stars: 5, text: "Absolutely incredible. The croissants are the best I've had outside of France. Worth every penny." },
+  { id: '5', author: 'Dermot F.', time: '3 months ago', stars: 5, text: "A gem in Limerick. The pistachio choux is extraordinary. We drove an hour just to get here." },
 ]
 
 function Stars() {
@@ -24,6 +24,20 @@ function Stars() {
 
 export default function Reviews() {
   const [idx, setIdx] = useState(0)
+  const [reviews, setReviews] = useState(DEFAULT_reviews)
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/reviews')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setReviews(data)
+        }
+      })
+      .catch(() => {
+        // Use default reviews if API is not available
+      })
+  }, [])
 
   return (
     <section id="reviews" style={{ position: 'relative', background: '#FAF8F5', padding: '8rem 0 10rem', overflow: 'hidden' }}>
@@ -70,7 +84,7 @@ export default function Reviews() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6" /></svg>
               </button>
               <button
-                onClick={() => setIdx(i => Math.min(REVIEWS.length - 1, i + 1))}
+                onClick={() => setIdx(i => Math.min(reviews.length - 1, i + 1))}
                 aria-label="Next"
                 style={{ width: '3rem', height: '3rem', border: '1px solid #2D2422', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'transparent', color: '#2D2422', transition: 'all 0.3s ease' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#2D2422'; (e.currentTarget as HTMLElement).style.color = '#FAF8F5' }}
@@ -79,7 +93,7 @@ export default function Reviews() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
               </button>
               <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.3em', color: '#5C4E4C', marginLeft: '0.5rem', fontFamily: "'Inter', sans-serif" }}>
-                0{idx + 1} / 0{REVIEWS.length}
+                0{idx + 1} / 0{reviews.length}
               </span>
             </div>
           </motion.div>
@@ -90,7 +104,7 @@ export default function Reviews() {
             className="col-span-12 md:col-span-7 md:col-start-6"
             style={{ marginTop: '3rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}
           >
-            {REVIEWS.map((r, i) => (
+            {reviews.map((r, i) => (
               <motion.div
                 key={i}
                 variants={staggerChild}
