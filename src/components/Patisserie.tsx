@@ -1,16 +1,16 @@
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { slideUp, slideLeft, slideRight, imageReveal, VP } from '../lib/motion'
 
-const PLATES = [
-  { number: '01', title: 'Signature Cakes', imgLeft: true, img: 'https://static.prod-images.emergentagent.com/jobs/cbb31a6a-4943-4178-85f1-14347656ed11/images/395f490bfca4ccced891679c2a2301ccc040efb8c1581ffdb2152d8c11933911.png', desc: 'Layered entremets finished by hand with edible gold leaf. Built the day before service, never a moment sooner.', sub: 'Pistachio · Rose · Hazelnut Praliné', price: 'from €6' },
-  { number: '02', title: 'Macarons', imgLeft: false, img: 'https://images.pexels.com/photos/32600936/pexels-photo-32600936.jpeg', desc: "Crisp shells, soft centres. The flavours change with the morning's mood and the season's fruit.", sub: '12 daily flavours · gluten-free', price: 'from €2.50' },
-  { number: '03', title: 'Viennoiserie', imgLeft: true, img: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=900&q=85&auto=format&fit=crop', desc: 'Three-day cold-fermented dough, French butter, laminated by hand. The croissant you remember from holiday — every single morning.', sub: 'Plain · Almond · Chocolate · Pain Suisse', price: 'from €3.80' },
-  { number: '04', title: 'Slices & Tarts', imgLeft: false, img: 'https://images.unsplash.com/photo-1624000961428-eeece184988b?w=900&q=85&auto=format&fit=crop', desc: "Single-serve compositions that arrive looking too pretty to eat — until they don't. Refined, never overwrought.", sub: 'Pistachio Raspberry · Dark Chocolate · Lemon Verveine', price: 'from €5' },
-  { number: '05', title: 'Behind the Counter', imgLeft: true, img: 'https://images.pexels.com/photos/33703638/pexels-photo-33703638.jpeg', desc: 'The glass case opens Thursday at 11:30. By Saturday afternoon, what\'s left is what\'s left. Come early.', sub: 'Restocked Thu · Fri · Sat', price: 'Visit us' },
+const DEFAULT_PLATES = [
+  { id: '1', number: '01', title: 'Signature Cakes', imgLeft: true, img: 'https://static.prod-images.emergentagent.com/jobs/cbb31a6a-4943-4178-85f1-14347656ed11/images/395f490bfca4ccced891679c2a2301ccc040efb8c1581ffdb2152d8c11933911.png', desc: 'Layered entremets finished by hand with edible gold leaf. Built the day before service, never a moment sooner.', sub: 'Pistachio · Rose · Hazelnut Praliné', price: 'from €6' },
+  { id: '2', number: '02', title: 'Macarons', imgLeft: false, img: 'https://images.pexels.com/photos/32600936/pexels-photo-32600936.jpeg', desc: "Crisp shells, soft centres. The flavours change with the morning's mood and the season's fruit.", sub: '12 daily flavours · gluten-free', price: 'from €2.50' },
+  { id: '3', number: '03', title: 'Viennoiserie', imgLeft: true, img: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=900&q=85&auto=format&fit=crop', desc: 'Three-day cold-fermented dough, French butter, laminated by hand. The croissant you remember from holiday — every single morning.', sub: 'Plain · Almond · Chocolate · Pain Suisse', price: 'from €3.80' },
+  { id: '4', number: '04', title: 'Slices & Tarts', imgLeft: false, img: 'https://images.unsplash.com/photo-1624000961428-eeece184988b?w=900&q=85&auto=format&fit=crop', desc: "Single-serve compositions that arrive looking too pretty to eat — until they don't. Refined, never overwrought.", sub: 'Pistachio Raspberry · Dark Chocolate · Lemon Verveine', price: 'from €5' },
+  { id: '5', number: '05', title: 'Behind the Counter', imgLeft: true, img: 'https://images.pexels.com/photos/33703638/pexels-photo-33703638.jpeg', desc: 'The glass case opens Thursday at 11:30. By Saturday afternoon, what\'s left is what\'s left. Come early.', sub: 'Restocked Thu · Fri · Sat', price: 'Visit us' },
 ]
 
-function Plate({ plate }: { plate: typeof PLATES[number] }) {
+function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const imgY = useTransform(scrollYProgress, [0, 1], ['10%', '-10%'])
@@ -60,6 +60,21 @@ function Plate({ plate }: { plate: typeof PLATES[number] }) {
 }
 
 export default function Patisserie() {
+  const [plates, setPlates] = useState(DEFAULT_PLATES)
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setPlates(data)
+        }
+      })
+      .catch(() => {
+        // Use default plates if API is not available
+      })
+  }, [])
+
   return (
     <section id="patisserie" style={{ background: '#FAF8F5', padding: '7rem 0 9rem', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1.5rem' }}>
@@ -80,7 +95,7 @@ export default function Patisserie() {
               Five plates, written for the season. The counter shifts each week — what's here is what's true today.
             </p>
             <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.625rem', textTransform: 'uppercase', letterSpacing: '0.3em', color: '#6F6F6F', fontFamily: "'Inter', sans-serif" }}>
-              <span>05 Plates</span>
+              <span>0{plates.length} Plates</span>
               <span style={{ height: '1px', flex: 1, background: 'rgba(45,36,34,0.2)' }} />
               <span>Lookbook</span>
             </div>
@@ -89,7 +104,7 @@ export default function Patisserie() {
 
         {/* Plates */}
         <div style={{ borderTop: '1px solid rgba(45,36,34,0.1)' }}>
-          {PLATES.map(plate => <Plate key={plate.number} plate={plate} />)}
+          {plates.map(plate => <Plate key={plate.id || plate.number} plate={plate} />)}
         </div>
       </div>
     </section>

@@ -15,9 +15,54 @@ const ITEMS = [
 export default function Preorder() {
   const [qty, setQty] = useState<Record<string, number>>({})
   const [sent, setSent] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    pickupDate: '',
+    notes: '',
+  })
 
   const update = (item: string, delta: number) =>
     setQty(prev => ({ ...prev, [item]: Math.max(0, (prev[item] ?? 0) + delta) }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const items = Object.entries(qty)
+      .filter(([, count]) => count > 0)
+      .map(([item, count]) => `${count}x ${item}`)
+      .join(', ')
+
+    if (!items) {
+      alert('Please select at least one item')
+      return
+    }
+
+    try {
+      const res = await fetch('http://localhost:3001/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          items,
+          totalPrice: 0,
+          status: 'pending',
+          notes: formData.notes,
+        }),
+      })
+
+      if (res.ok) {
+        setSent(true)
+        setFormData({ name: '', email: '', phone: '', pickupDate: '', notes: '' })
+        setQty({})
+      }
+    } catch (err) {
+      console.error('Failed to submit order:', err)
+      alert('Failed to submit order. Please try again.')
+    }
+  }
 
   const inputStyle: React.CSSProperties = {
     width: '100%', marginTop: '0.5rem', padding: '0.75rem 0',
@@ -63,19 +108,24 @@ export default function Preorder() {
               <p style={{ color: '#6F6F6F', fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem' }}>We'll confirm within 24 hours by email or phone.</p>
             </div>
           ) : (
-            <form onSubmit={e => { e.preventDefault(); setSent(true) }}>
+            <form onSubmit={handleSubmit}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
-                {[
-                  { label: 'Name', type: 'text', placeholder: 'Your full name' },
-                  { label: 'Email', type: 'email', placeholder: 'you@example.com' },
-                  { label: 'Phone (optional)', type: 'tel', placeholder: '+353 …' },
-                  { label: 'Pickup Date', type: 'date', placeholder: '' },
-                ].map(f => (
-                  <div key={f.label} style={{ gridColumn: 'span 1' }}>
-                    <label style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#5C4E4C', fontFamily: "'Inter', sans-serif" }}>{f.label}</label>
-                    <input type={f.type} placeholder={f.placeholder} required={f.label !== 'Phone (optional)'} style={inputStyle} />
-                  </div>
-                ))}
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#5C4E4C', fontFamily: "'Inter', sans-serif" }}>Name</label>
+                  <input type="text" placeholder="Your full name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} style={inputStyle} />
+                </div>
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#5C4E4C', fontFamily: "'Inter', sans-serif" }}>Email</label>
+                  <input type="email" placeholder="you@example.com" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} style={inputStyle} />
+                </div>
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#5C4E4C', fontFamily: "'Inter', sans-serif" }}>Phone (optional)</label>
+                  <input type="tel" placeholder="+353 …" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} style={inputStyle} />
+                </div>
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#5C4E4C', fontFamily: "'Inter', sans-serif" }}>Pickup Date</label>
+                  <input type="date" required value={formData.pickupDate} onChange={e => setFormData({ ...formData, pickupDate: e.target.value })} style={inputStyle} />
+                </div>
               </div>
 
               {/* Items */}
@@ -106,7 +156,7 @@ export default function Preorder() {
               {/* Notes */}
               <div style={{ marginTop: '1.5rem' }}>
                 <label style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#5C4E4C', fontFamily: "'Inter', sans-serif" }}>Notes (allergies, custom requests)</label>
-                <textarea rows={3} style={{ ...inputStyle, resize: 'none', width: '100%' }} />
+                <textarea rows={3} value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} style={{ ...inputStyle, resize: 'none', width: '100%' }} />
               </div>
 
               <button type="submit" style={{ marginTop: '2rem', width: '100%', padding: '1rem', background: '#2D2422', color: '#FAF8F5', border: 'none', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.2em', cursor: 'pointer', fontFamily: "'Inter', sans-serif", transition: 'opacity 0.2s ease' }}
