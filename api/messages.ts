@@ -1,11 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import sql from './_db'
-
-async function ensureTable() {
-  await sql`CREATE TABLE IF NOT EXISTS messages (
-    id TEXT PRIMARY KEY, name TEXT, email TEXT, message TEXT, created_at TIMESTAMP DEFAULT NOW()
-  )`
-}
+import { neon } from '@neondatabase/serverless'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -13,8 +7,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   if (req.method === 'OPTIONS') return res.status(200).end()
 
+  const sql = neon(process.env.POSTGRES_URL!)
   try {
-    await ensureTable()
+    await sql`CREATE TABLE IF NOT EXISTS messages (
+      id TEXT PRIMARY KEY, name TEXT, email TEXT, message TEXT, created_at TIMESTAMP DEFAULT NOW()
+    )`
     const id = req.query.id as string | undefined
 
     if (req.method === 'GET') {
