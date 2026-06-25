@@ -17,11 +17,11 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
   const textAnim = plate.imgLeft ? slideRight : slideLeft
 
   return (
-    <article ref={ref} className="grid grid-cols-12 gap-6 md:gap-12 lg:gap-20 items-center py-20 md:py-28" style={{ borderBottom: '1px solid rgba(45,36,34,0.1)' }}>
-      {/* Image - matches Story section size */}
+    <article ref={ref} className="grid grid-cols-12 gap-6 md:gap-10 lg:gap-16 items-center py-20 md:py-28" style={{ borderBottom: '1px solid rgba(45,36,34,0.1)' }}>
+      {/* Image */}
       <motion.div
         {...imageReveal()}
-        className={`col-span-12 md:col-span-5 lg:col-span-4 ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
+        className={`col-span-12 md:col-span-5 lg:col-span-5 ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
       >
         <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: '#FFF5F3' }}>
           <motion.img
@@ -38,7 +38,7 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
       {/* Text */}
       <motion.div
         {...textAnim()}
-        className={`col-span-12 md:col-span-7 lg:col-span-8 ${plate.imgLeft ? 'md:order-2 md:pr-4 lg:pr-8' : 'md:order-1 md:pl-4 lg:pl-8'}`}
+        className={`col-span-12 md:col-span-7 lg:col-span-7 ${plate.imgLeft ? 'md:order-2' : 'md:order-1'}`}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem', marginBottom: '1rem' }}>
           <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', color: 'rgba(212,175,55,0.4)', fontSize: 'clamp(4rem, 9vw, 8rem)', lineHeight: 1 }}>{plate.number}</span>
@@ -49,8 +49,8 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
           />
         </div>
         <h3 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(2.25rem, 4.5vw, 4rem)', lineHeight: 0.95, letterSpacing: '-1px', color: '#2D2422', fontWeight: 400 }}>{plate.title}</h3>
-        <p style={{ marginTop: '1.5rem', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', color: '#6F6F6F', lineHeight: 1.7, maxWidth: '28rem', fontFamily: "'Inter', sans-serif" }}>{plate.desc}</p>
-        <div style={{ marginTop: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '28rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(45,36,34,0.2)' }}>
+        <p style={{ marginTop: '1.5rem', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', color: '#6F6F6F', lineHeight: 1.7, fontFamily: "'Inter', sans-serif" }}>{plate.desc}</p>
+        <div style={{ marginTop: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid rgba(45,36,34,0.2)' }}>
           <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.25em', color: '#2D2422', fontFamily: "'Inter', sans-serif" }}>{plate.sub}</span>
           <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontSize: '1.5rem', color: '#D4AF37' }}>{plate.price}</span>
         </div>
@@ -77,7 +77,7 @@ export default function Patisserie() {
 
   return (
     <section id="patisserie" style={{ background: '#FAF8F5', padding: '7rem 0 9rem', overflow: 'hidden' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1.5rem' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 80px' }}>
 
         {/* Header */}
         <div className="grid grid-cols-12 gap-6 items-end mb-20 md:mb-28">

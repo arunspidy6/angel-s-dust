@@ -20,13 +20,13 @@
   /* Colors */
   --pink: #E8C8D0;
   --pink-dark: #D4A8B8;
-  --navy: #1F2E54;
-  --navy-light: #2D3E6E;
+  --navy: #2D2422;
+  --navy-light: #3D3432;
 
   /* Text */
-  --text-dark: #1F2E54;
-  --text-secondary: #5C6B8E;
-  --text-muted: #8B96AE;
+  --text-dark: #2D2422;
+  --text-secondary: #6F6F6F;
+  --text-muted: #999999;
   --text-light: #C7B5AA;
 
   /* Spacing */
