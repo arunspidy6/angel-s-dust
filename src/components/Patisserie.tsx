@@ -21,7 +21,7 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
       {/* Image - matches Story section size */}
       <motion.div
         {...imageReveal()}
-        className={`col-span-12 ${plate.imgLeft ? 'md:col-span-5' : 'md:col-span-5'} ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
+        className={`col-span-12 md:col-span-5 lg:col-span-4 ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
       >
         <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: '#FFF5F3' }}>
           <motion.img
@@ -38,7 +38,7 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
       {/* Text */}
       <motion.div
         {...textAnim()}
-        className={`col-span-12 md:col-span-5 ${plate.imgLeft ? 'md:order-2 md:pr-4 lg:pr-8' : 'md:order-1 md:pl-4 lg:pl-8'}`}
+        className={`col-span-12 md:col-span-7 lg:col-span-8 ${plate.imgLeft ? 'md:order-2 md:pr-4 lg:pr-8' : 'md:order-1 md:pl-4 lg:pl-8'}`}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem', marginBottom: '1rem' }}>
           <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', color: 'rgba(212,175,55,0.4)', fontSize: 'clamp(4rem, 9vw, 8rem)', lineHeight: 1 }}>{plate.number}</span>
