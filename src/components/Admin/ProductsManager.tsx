@@ -87,9 +87,12 @@ export default function ProductsManager() {
         setEditingId(null)
         setIsAdding(false)
         setError(null)
+      } else {
+        const body = await res.json().catch(() => ({}))
+        setError(body.error || `Server error (${res.status})`)
       }
     } catch (err) {
-      setError('Failed to save product')
+      setError('Failed to save product — check your network')
       console.error('Failed to save product:', err)
     }
   }

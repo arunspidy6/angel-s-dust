@@ -31,16 +31,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json(rows)
     }
     if (req.method === 'POST') {
-      const { number, title, description, sub, price, img, img_position, img_left } = req.body
+      const { number, title, desc, description, sub, price, img, img_position, imgLeft, img_left } = req.body
       const newId = crypto.randomUUID()
       await sql`INSERT INTO products (id, number, title, description, sub, price, img, img_position, img_left)
-        VALUES (${newId}, ${number}, ${title}, ${description}, ${sub}, ${price}, ${img}, ${img_position ?? 'center'}, ${img_left ?? true})`
+        VALUES (${newId}, ${number}, ${title}, ${desc ?? description}, ${sub}, ${price}, ${img}, ${img_position ?? 'center'}, ${imgLeft ?? img_left ?? true})`
       return res.status(201).json({ id: newId, ...req.body })
     }
     if (req.method === 'PUT' && id) {
-      const { number, title, description, sub, price, img, img_position, img_left } = req.body
-      await sql`UPDATE products SET number=${number}, title=${title}, description=${description},
-        sub=${sub}, price=${price}, img=${img}, img_position=${img_position}, img_left=${img_left} WHERE id=${id}`
+      const { number, title, desc, description, sub, price, img, img_position, imgLeft, img_left } = req.body
+      await sql`UPDATE products SET number=${number}, title=${title}, description=${desc ?? description},
+        sub=${sub}, price=${price}, img=${img}, img_position=${img_position ?? 'center'}, img_left=${imgLeft ?? img_left ?? true} WHERE id=${id}`
       return res.json({ id, ...req.body })
     }
     if (req.method === 'DELETE' && id) {
