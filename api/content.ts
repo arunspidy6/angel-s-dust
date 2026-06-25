@@ -7,7 +7,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const sql = neon(process.env.POSTGRES_URL!)
+  const sql = neon(process.env.POSTGRES_URL ?? process.env.DATABASE_URL ?? process.env.NEON_DATABASE_URL ?? "")
   try {
     await sql`CREATE TABLE IF NOT EXISTS content (
       key TEXT PRIMARY KEY, value TEXT, updated_at TIMESTAMP DEFAULT NOW()
