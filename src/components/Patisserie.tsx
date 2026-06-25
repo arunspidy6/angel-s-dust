@@ -18,10 +18,10 @@ function Plate({ plate }: { plate: typeof DEFAULT_PLATES[number] }) {
 
   return (
     <article ref={ref} className="grid grid-cols-12 gap-6 md:gap-12 lg:gap-20 items-center py-20 md:py-28" style={{ borderBottom: '1px solid rgba(45,36,34,0.1)' }}>
-      {/* Image */}
+      {/* Image - matches Story section size */}
       <motion.div
         {...imageReveal()}
-        className={`col-span-12 md:col-span-7 ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
+        className={`col-span-12 ${plate.imgLeft ? 'md:col-span-5' : 'md:col-span-5'} ${plate.imgLeft ? 'md:order-1' : 'md:order-2'}`}
       >
         <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: '#FFF5F3' }}>
           <motion.img

@@ -1,6 +1,6 @@
 export default function Footer() {
   const linkStyle: React.CSSProperties = {
-    fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: 'rgba(250,248,245,0.6)',
+    fontFamily: "'Inter', sans-serif", fontSize: '0.8125rem', color: '#D9CFB9',
     textDecoration: 'none', lineHeight: 2, transition: 'color 0.2s ease', display: 'block',
   }
 
@@ -25,12 +25,12 @@ export default function Footer() {
             <div style={{ fontFamily: "'Instrument Serif', serif", fontSize: '1.75rem', letterSpacing: '-0.03em', marginBottom: '1rem' }}>
               Angel's Dust<sup style={{ fontSize: '0.5em', verticalAlign: 'super', color: '#D4AF37', marginLeft: '2px' }}>®</sup>
             </div>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: 'rgba(250,248,245,0.55)', lineHeight: 1.7, maxWidth: '20rem' }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.875rem', color: '#D9CFB9', lineHeight: 1.7, maxWidth: '20rem' }}>
               A Parisian pâtisserie on Thomas Street, Limerick. Handmade every morning, sold out by lunch.
             </p>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
               {['Instagram', 'Facebook'].map(s => (
-                <a key={s} href="#" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(250,248,245,0.5)', textDecoration: 'none', fontFamily: "'Inter', sans-serif" }}>{s}</a>
+                <a key={s} href="#" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#B8AAA0', textDecoration: 'none', fontFamily: "'Inter', sans-serif" }}>{s}</a>
               ))}
             </div>
           </div>
@@ -52,8 +52,8 @@ export default function Footer() {
         </div>
 
         <div style={{ marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(250,248,245,0.1)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'rgba(250,248,245,0.35)' }}>© 2026 Angel's Dust Patisserie — Limerick, Ireland</span>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: 'rgba(250,248,245,0.35)' }}>Angel Dust · Pâtisserie &amp; Bakery</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: '#8F8278' }}>© 2026 Angel's Dust Patisserie — Limerick, Ireland</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', color: '#8F8278' }}>Angel Dust · Pâtisserie &amp; Bakery</span>
         </div>
       </div>
     </footer>

@@ -29,10 +29,10 @@ export default function AdminLayout() {
         borderBottom: '1px solid rgba(212,175,55,0.2)'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.5px' }}>
+          <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.5px', color: '#FFFFFF' }}>
             Angel's Dust CMS
           </h1>
-          <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.875rem', color: 'rgba(212,175,55,0.8)', opacity: 0.9 }}>
+          <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.875rem', color: '#D4AF37' }}>
             Manage your pastry shop content, orders, and customer interactions
           </p>
         </div>

@@ -86,12 +86,12 @@ export default function Preorder() {
             Skip the queue.<br />
             <em style={{ fontStyle: 'italic', color: '#D4AF37' }}>Reserve</em> your favourites.
           </h2>
-          <p style={{ marginTop: '1.5rem', color: 'rgba(217,207,201,0.9)', lineHeight: 1.7, fontSize: '1rem', maxWidth: '28rem', fontFamily: "'Inter', sans-serif" }}>
+          <p style={{ marginTop: '1.5rem', color: '#D9CFB9', lineHeight: 1.7, fontSize: '1rem', maxWidth: '28rem', fontFamily: "'Inter', sans-serif" }}>
             Cakes and pastries sell out quickly. Fill this in by Tuesday and we'll have your order ready for collection from Thursday onward. We'll confirm by email or phone within 24 hours.
           </p>
           <ul style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {['No payment required to reserve', 'We confirm within 24 hours', '48 hours notice for custom cakes'].map(item => (
-              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem', color: 'rgba(217,207,201,0.9)', fontFamily: "'Inter', sans-serif" }}>
+              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem', color: '#D9CFB9', fontFamily: "'Inter', sans-serif" }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2"><path d="M20 6 9 17l-5-5" /></svg>
                 {item}
               </li>
