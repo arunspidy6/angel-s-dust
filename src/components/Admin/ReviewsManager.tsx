@@ -1,4 +1,4 @@
-import { API_BASE } from '../../lib/apiUrl'
+import { API_BASE, adminHeaders } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 
 interface Review {
@@ -45,7 +45,7 @@ export default function ReviewsManager() {
     try {
       await fetch(API_BASE + `/api/reviews/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders(),
         body: JSON.stringify({ approved: true }),
       })
       fetchReviews()
@@ -57,7 +57,7 @@ export default function ReviewsManager() {
   const deleteReview = async (id: string) => {
     if (!confirm('Delete this review?')) return
     try {
-      await fetch(API_BASE + `/api/reviews/${id}`, { method: 'DELETE' })
+      await fetch(API_BASE + `/api/reviews/${id}`, { method: 'DELETE', headers: adminHeaders() })
       fetchReviews()
     } catch (err) {
       setError('Failed to delete review')

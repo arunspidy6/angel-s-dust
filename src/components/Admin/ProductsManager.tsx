@@ -1,4 +1,4 @@
-import { API_BASE } from '../../lib/apiUrl'
+import { API_BASE, adminHeaders } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 import EnhancedProductForm from './EnhancedProductForm'
 
@@ -76,7 +76,7 @@ export default function ProductsManager() {
 
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders(),
         body: JSON.stringify(formData),
       })
 
@@ -100,7 +100,7 @@ export default function ProductsManager() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product? This cannot be undone.')) return
     try {
-      await fetch(API_BASE + `/api/products/${id}`, { method: 'DELETE' })
+      await fetch(API_BASE + `/api/products/${id}`, { method: 'DELETE', headers: adminHeaders() })
       fetchProducts()
     } catch (err) {
       setError('Failed to delete product')
