@@ -1,10 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { neon } from '@neondatabase/serverless'
+import { isAdmin } from './_auth'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-admin-token')
   if (req.method === 'OPTIONS') return res.status(200).end()
 
   const sql = neon(process.env.angel_dust_db_POSTGRES_URL ?? process.env.POSTGRES_URL ?? process.env.DATABASE_URL ?? "")
@@ -20,6 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json(content)
     }
     if (req.method === 'POST') {
+      if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' })
       for (const [key, value] of Object.entries(req.body as Record<string, string>)) {
         await sql`INSERT INTO content (key, value) VALUES (${key}, ${value})
           ON CONFLICT (key) DO UPDATE SET value=${value}, updated_at=NOW()`

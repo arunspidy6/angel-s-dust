@@ -29,41 +29,6 @@ export default function App() {
       <Preorder />
       <Visit />
       <Footer />
-      <AdminLink />
     </div>
-  )
-}
-
-function AdminLink() {
-  return (
-    <a
-      href="/admin"
-      style={{
-        position: 'fixed',
-        bottom: '2rem',
-        right: '2rem',
-        width: '50px',
-        height: '50px',
-        borderRadius: '50%',
-        background: '#D4AF37',
-        color: 'white',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textDecoration: 'none',
-        fontSize: '1.5rem',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        transition: 'all 0.3s ease',
-      }}
-      title="Admin Panel"
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.background = '#2D2422'
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLElement).style.background = '#D4AF37'
-      }}
-    >
-      ⚙️
-    </a>
   )
 }

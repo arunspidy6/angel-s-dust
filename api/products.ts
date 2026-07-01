@@ -1,10 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { neon } from '@neondatabase/serverless'
+import { isAdmin } from './_auth'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-admin-token')
   if (req.method === 'OPTIONS') return res.status(200).end()
 
   const sql = neon(process.env.angel_dust_db_POSTGRES_URL ?? process.env.POSTGRES_URL ?? process.env.DATABASE_URL ?? "")
@@ -22,6 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json(rows)
     }
     if (req.method === 'POST') {
+      if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' })
       const { number, title, desc, description, sub, price, img, img_position, imgLeft, img_left } = req.body
       const newId = crypto.randomUUID()
       await sql`INSERT INTO products (id, number, title, description, sub, price, img, img_position, img_left)
@@ -29,12 +31,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(201).json({ id: newId, ...req.body })
     }
     if (req.method === 'PUT' && id) {
+      if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' })
       const { number, title, desc, description, sub, price, img, img_position, imgLeft, img_left } = req.body
       await sql`UPDATE products SET number=${number}, title=${title}, description=${desc ?? description},
         sub=${sub}, price=${price}, img=${img}, img_position=${img_position ?? 'center'}, img_left=${imgLeft ?? img_left ?? true} WHERE id=${id}`
       return res.json({ id, ...req.body })
     }
     if (req.method === 'DELETE' && id) {
+      if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' })
       await sql`DELETE FROM products WHERE id=${id}`
       return res.json({ success: true })
     }

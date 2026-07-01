@@ -1,10 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { neon } from '@neondatabase/serverless'
+import { isAdmin } from './_auth'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-admin-token')
   if (req.method === 'OPTIONS') return res.status(200).end()
 
   const sql = neon(process.env.angel_dust_db_POSTGRES_URL ?? process.env.POSTGRES_URL ?? process.env.DATABASE_URL ?? "")
@@ -15,16 +16,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const id = req.query.id as string | undefined
 
     if (req.method === 'GET') {
+      // Messages contain customer PII — admin only
+      if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' })
       const rows = await sql`SELECT * FROM messages ORDER BY created_at DESC`
       return res.json(rows)
     }
     if (req.method === 'POST') {
+      // Customers submit contact forms — public
       const { name, email, message } = req.body
       const newId = crypto.randomUUID()
       await sql`INSERT INTO messages (id, name, email, message) VALUES (${newId}, ${name}, ${email}, ${message})`
       return res.status(201).json({ id: newId, name, email, message })
     }
     if (req.method === 'DELETE' && id) {
+      if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' })
       await sql`DELETE FROM messages WHERE id=${id}`
       return res.json({ success: true })
     }

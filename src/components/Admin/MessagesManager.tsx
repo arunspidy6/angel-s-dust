@@ -1,4 +1,4 @@
-import { API_BASE } from '../../lib/apiUrl'
+import { API_BASE, adminHeaders } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 
 interface Message {
@@ -23,7 +23,7 @@ export default function MessagesManager() {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch(API_BASE + '/api/messages')
+      const res = await fetch(API_BASE + '/api/messages', { headers: adminHeaders() })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       const data = await res.json()
       setMessages(Array.isArray(data) ? data : [])
@@ -40,7 +40,7 @@ export default function MessagesManager() {
   const deleteMessage = async (id: string) => {
     if (!confirm('Delete this message?')) return
     try {
-      await fetch(API_BASE + `/api/messages/${id}`, { method: 'DELETE' })
+      await fetch(API_BASE + `/api/messages/${id}`, { method: 'DELETE', headers: adminHeaders() })
       fetchMessages()
     } catch (err) {
       setError('Failed to delete message')

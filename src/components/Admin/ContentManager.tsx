@@ -1,4 +1,4 @@
-import { API_BASE } from '../../lib/apiUrl'
+import { API_BASE, adminHeaders } from '../../lib/apiUrl'
 import { useState, useEffect } from 'react'
 
 interface PageContent {
@@ -107,7 +107,7 @@ export default function ContentManager() {
     try {
       await fetch(API_BASE + '/api/content', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders(),
         body: JSON.stringify(content),
       })
       setSuccess(true)
